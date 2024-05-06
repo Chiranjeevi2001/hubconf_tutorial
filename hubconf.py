@@ -48,14 +48,14 @@ model = LSTM(input_dim, seq_dim, hidden_dim, layer_dim, output_dim)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr = 0.005)
 
-def train_model(num_epochs = 10, model = model, train_dl = train_dl, optimizer = optimizer, loss = criterion):
+def train_model(num_epochs = 10, model = model, train_dl = train_dl, optimizer = optimizer, lossy = criterion):
   for epoch in range(num_epochs):
     for i , (X, y) in enumerate(train_dl):
       X = Variable(X.view(-1, seq_dim, input_dim))
       y = Variable(y)
       out = model(X)
 
-      loss = loss(out, y)
+      loss = lossy(out, y)
       optimizer.zero_grad()
       loss.backward()
       optimizer.step()
