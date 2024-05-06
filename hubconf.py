@@ -49,7 +49,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr = 0.005)
 
 def train_model(num_epochs = 10, model = model, train_dl = train_dl, optimizer = optimizer, loss = criterion):
-  for epoch in num_epochs:
+  for epoch in range(num_epochs):
     for i , (X, y) in enumerate(train_dl):
       X = Variable(X.view(-1, seq_dim, input_dim))
       y = Variable(y)
