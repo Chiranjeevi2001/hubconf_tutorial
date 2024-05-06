@@ -30,7 +30,7 @@ class LSTM(nn.Module):
 
 
   def forward(self, x):
-    h0 = Variable(torch.zeros(layer_dim, x.size(0), hidden_dim))````
+    h0 = Variable(torch.zeros(layer_dim, x.size(0), hidden_dim))
 
     out, hn = self.lstm(x, h0)
 
