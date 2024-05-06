@@ -18,7 +18,7 @@ batch_size = 64
 train_dl = DataLoader(mnist_train, batch_size = batch_size)
 
 class LSTM(nn.Module):
-  def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+  def __init__(self, input_dim, seq_length, hidden_dim, layer_dim, output_dim):
     super(LSTM, self).__init__()
 
     self.hidden_dim = hidden_dim
@@ -26,15 +26,15 @@ class LSTM(nn.Module):
 
     self.lstm = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first = True)
 
-    self.fc = nn.Linear(hidden_dim, output_dim)
+    self.fc = nn.Linear(hidden_dim*seq_length, output_dim)
 
 
   def forward(self, x):
     h0 = Variable(torch.zeros(layer_dim, x.size(0), hidden_dim))
-
-    out, hn = self.lstm(x, h0)
-
-    out = self.fc(out[:, -1, :])
+    c0 = Variable(torch.zeros(self.layer_dim, x.size(0), self.hidden_dim))
+    out, hn = self.lstm(x, (h0, c0))
+    out = out.reshape(out.shape[0],-1)
+    out = self.fc(out)
 
     return out
 
@@ -44,7 +44,7 @@ hidden_dim = 100
 layer_dim = 1
 seq_dim = 28
 
-model = LSTM(input_dim, hidden_dim, layer_dim, output_dim)
+model = LSTM(input_dim, seq_dim, hidden_dim, layer_dim, output_dim)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr = 0.005)
 
